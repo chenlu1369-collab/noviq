@@ -1,0 +1,53 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { articles } from '../../data/articles';
+---
+
+<Layout title="Reviews | NOVIQ" description="Browse NOVIQ technology reviews and practical product guides.">
+	<main class="reviews-page">
+		<section class="reviews-section">
+			<div class="reviews-wrap">
+				<div class="reviews-heading">
+					<h1>Reviews</h1>
+				</div>
+				<div class="reviews-grid">
+					{articles.map((article) => {
+						const articleHref = `/reviews/${article.slug}/`;
+						return <article class="review-card">
+							<a class="review-image" href={articleHref}><img src={article.coverImage} alt={article.coverAlt} loading="lazy" /></a>
+							<div class="review-copy">
+								<div class="review-meta"><span>{article.category}</span><span>Demonstration article</span></div>
+								<h2><a href={articleHref}>{article.title}</a></h2>
+								<p>{article.summary}</p>
+								<a class="read-link" href={articleHref}>Read Review <span aria-hidden="true">→</span></a>
+							</div>
+						</article>;
+					})}
+				</div>
+				<p class="demo-note">All articles shown are demonstrations, not hands-on product reviews.</p>
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<style>
+	.reviews-section{background:#F1F3F6;padding:76px 0 88px;min-height:58vh}
+	.reviews-wrap{width:min(1180px,calc(100% - 72px));margin-inline:auto}
+	.reviews-heading{margin-bottom:28px}
+	.reviews-heading h1{margin:0;color:var(--text);font:650 clamp(34px,4vw,42px)/1.15 'Manrope',sans-serif;letter-spacing:-1.5px}
+	.reviews-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+	.review-card{display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid #d7dde6;border-radius:14px;background:#202d4a;color:#fff}
+	.review-image{display:block;aspect-ratio:16/9;overflow:hidden;background:#e2e6ed}
+	.review-image img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
+	.review-card:hover .review-image img{transform:scale(1.025)}
+	.review-copy{display:flex;flex:1;flex-direction:column;padding:20px 22px 22px}
+	.review-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;color:#b6c2d6;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+	.review-copy h2{display:-webkit-box;min-height:2.64em;margin:10px 0 8px;overflow:hidden;color:#fff;font:600 clamp(21px,1.8vw,24px)/1.32 'Manrope',sans-serif;letter-spacing:-.4px;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}
+	.review-copy p{display:-webkit-box;min-height:3.2em;margin:0;overflow:hidden;color:#c5cede;font-size:16px;line-height:1.62;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}
+	.review-copy h2 a:hover{color:#dbe3ff}
+	.read-link{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;margin-top:auto;padding-top:16px;color:#a8baff;font-size:15px;font-weight:600}
+	.read-link span{transition:transform .2s}
+	.read-link:hover span{transform:translateX(3px)}
+	.demo-note{margin:18px 0 0;color:#566174;font-size:14px;line-height:1.55}
+	@media(max-width:760px){.reviews-section{padding:56px 0 66px}.reviews-wrap{width:calc(100% - 40px)}.reviews-grid{grid-template-columns:1fr;gap:18px}.review-copy{padding:18px 18px 20px}.review-copy h2{font-size:20px}.review-copy p{font-size:15px}.review-meta{font-size:11px}}
+</style>

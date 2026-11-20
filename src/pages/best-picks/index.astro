@@ -1,0 +1,134 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { bestPicks } from '../../data/homepage';
+import { exampleReview } from '../../data/articles/example-review';
+
+const photo = (id: string, width = 900) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`;
+
+const guides = [
+  {
+    category: 'Headphones',
+    title: exampleReview.title,
+    summary: exampleReview.summary,
+    image: exampleReview.coverImage,
+    alt: exampleReview.coverAlt,
+    href: `/reviews/${exampleReview.slug}/`,
+    label: 'Demo article',
+  },
+  {
+    category: 'Computers',
+    title: bestPicks[1].title,
+    summary: bestPicks[1].copy,
+    image: photo(bestPicks[1].image, 1200),
+    alt: bestPicks[1].alt,
+    href: undefined,
+    label: 'Demo preview',
+  },
+];
+
+const filters = ['All', 'Smartphones', 'Computers', 'Headphones', 'Smart Speakers'];
+---
+
+<Layout title="Best Picks | NOVIQ" description="Explore NOVIQ buying guides to compare technology and make more informed product choices.">
+  <main class="best-picks-page">
+    <div class="best-picks-container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Best Picks</span></nav>
+
+      <header class="page-intro">
+        <p class="eyebrow">NOVIQ BUYING GUIDES</p>
+        <h1>Best Picks</h1>
+        <p class="intro-lead">Find the right tech for the way you live and work.</p>
+      </header>
+
+      <section class="guides-section" aria-label="Buying guides">
+        <div class="filter-bar" role="group" aria-label="Filter buying guides by category">
+          {filters.map((filter, index) => <button class="filter-button" type="button" data-filter={filter === 'All' ? 'all' : filter} aria-pressed={index === 0 ? 'true' : 'false'}>{filter}</button>)}
+        </div>
+
+        <div class="guides-grid">
+          {guides.map((guide) => (
+            <article class="guide-card" data-category={guide.category}>
+              <div class="guide-image-wrap">
+                <img class="guide-image" src={guide.image} alt={guide.alt} loading="lazy" />
+                <span class="guide-status">{guide.label}</span>
+              </div>
+              <div class="guide-copy">
+                <p class="guide-category">{guide.category}</p>
+                <h2>{guide.title}</h2>
+                <p class="guide-summary">{guide.summary}</p>
+                {guide.href ? <a class="guide-link" href={guide.href}>Read Buying Guide <span aria-hidden="true">→</span></a> : <span class="guide-link guide-link-disabled" aria-disabled="true">Guide coming soon</span>}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="empty-state" hidden aria-live="polite">
+          <h2>No guides in this category yet.</h2>
+          <p>New NOVIQ buying guides are on the way. Check back soon for thoughtful comparisons and practical advice.</p>
+        </div>
+        <p class="preview-note">Demo content is clearly marked. Preview cards without a published article are not clickable.</p>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const guideCards = Array.from(document.querySelectorAll<HTMLElement>('.guide-card[data-category]'));
+  const emptyState = document.querySelector<HTMLElement>('.empty-state');
+  const emptyHeading = emptyState?.querySelector('h2');
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const category = button.dataset.filter ?? 'all';
+      let visibleCount = 0;
+
+      filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      guideCards.forEach((card) => {
+        const matches = category === 'all' || card.dataset.category === category;
+        card.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visibleCount > 0;
+      if (emptyHeading) emptyHeading.textContent = category === 'all' ? 'No buying guides yet.' : `No ${category.toLowerCase()} guides yet.`;
+    });
+  });
+</script>
+
+<style>
+  .best-picks-page{min-height:65vh;padding:36px 24px 96px;background:#f5f6f8;color:#171b24}
+  .best-picks-container{width:min(1180px,100%);margin:0 auto}
+  .breadcrumbs{display:flex;gap:10px;margin:0 0 42px;color:#687386;font-size:14px}
+  .breadcrumbs a:hover{color:#4263d5}
+  .page-intro{max-width:790px;margin:0 0 42px}
+  .eyebrow{margin:0 0 12px;color:#4263d5;font-size:13px;font-weight:700;letter-spacing:.1em}
+  .page-intro h1{margin:0;color:#171b24;font:750 clamp(42px,5vw,62px)/1.08 'Manrope',sans-serif;letter-spacing:-.055em}
+  .intro-lead{margin:20px 0 0;color:#202a3a;font:600 clamp(20px,2.2vw,24px)/1.45 'Manrope',sans-serif;letter-spacing:-.025em}
+  .guides-section{padding-top:28px;border-top:1px solid #dfe4ec}
+  .filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px}
+  .filter-button{min-height:42px;padding:9px 17px;border:1px solid #dce2eb;border-radius:999px;background:#fff;color:#4c586b;font:600 14px/1.3 'DM Sans',sans-serif;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+  .filter-button:hover{border-color:#b7c4e0;color:#344fae}
+  .filter-button[aria-pressed="true"]{border-color:#17233f;background:#17233f;color:#fff}
+  .guides-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+  .guide-card{overflow:hidden;border:1px solid #e2e6ed;border-radius:15px;background:#fff;transition:transform .2s,box-shadow .2s}
+  .guide-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px #17233f14}
+  .guide-image-wrap{position:relative;overflow:hidden;aspect-ratio:16/9;background:#e3e7ed}
+  .guide-image{display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+  .guide-card:hover .guide-image{transform:scale(1.025)}
+  .guide-status{position:absolute;top:13px;left:13px;padding:6px 9px;border:1px solid #ffffff50;border-radius:999px;background:#17233fdb;color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em}
+  .guide-copy{padding:20px 21px 22px}
+  .guide-category{margin:0 0 9px;color:#4263d5;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .guide-copy h2{margin:0 0 10px;color:#171b24;font:700 22px/1.3 'Manrope',sans-serif;letter-spacing:-.035em}
+  .guide-summary{min-height:5.1em;margin:0;color:#566174;font-size:15px;line-height:1.7}
+  .guide-link{display:inline-flex;align-items:center;gap:8px;margin-top:17px;color:#344fae;font-size:14px;font-weight:700}
+  .guide-link span{color:#4263d5;font-size:18px;transition:transform .18s}
+  a.guide-link:hover span{transform:translateX(3px)}
+  .guide-link-disabled{color:#687386;cursor:not-allowed}
+  .empty-state{max-width:760px;margin:0 auto;padding:42px 28px;border:1px solid #e2e6ed;border-radius:15px;background:#fff;text-align:center}
+  .empty-state h2{margin:0 0 9px;color:#202a3a;font:700 24px/1.3 'Manrope',sans-serif}
+  .empty-state p{margin:0;color:#566174;font-size:16px;line-height:1.6}
+  .preview-note{margin:24px 0 0;color:#687386;font-size:13px;line-height:1.6}
+  @media(max-width:960px){.guides-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+  @media(max-width:640px){.best-picks-page{padding:28px 20px 68px}.breadcrumbs{margin-bottom:32px;font-size:13px}.page-intro{margin-bottom:32px}.guides-section{padding-top:22px}.filter-bar{gap:8px;margin-bottom:22px}.filter-button{min-height:39px;padding:8px 13px;font-size:13px}.guides-grid{grid-template-columns:1fr;gap:16px}.guide-copy{padding:18px}.guide-copy h2{font-size:21px}.guide-summary{min-height:0}.empty-state{padding:30px 20px}}
+</style>

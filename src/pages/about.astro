@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="About NOVIQ | Our Mission and Editorial Approach"
+  description="Learn about NOVIQ, our mission to make technology choices easier, and our approach to clear, transparent consumer tech coverage."
+>
+  <main class="about-page">
+    <div class="about-container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>About</span></nav>
+
+      <header class="about-intro" id="about-noviq">
+        <h1>About NOVIQ</h1>
+      </header>
+
+      <div class="about-sections">
+        <section class="about-section" aria-labelledby="mission-heading">
+          <div>
+            <h2 id="mission-heading">Our Mission</h2>
+            <p class="mission-statement">Technology should make life better, and choosing the right technology should be easier.</p>
+            <p>NOVIQ is an independent consumer technology publication offering product reviews, comparisons, and practical buying guides. We help readers understand product features, compare options, and find technology that suits their needs.</p>
+            <p>Our name combines Nova, a symbol of innovation and exploration, with IQ: curiosity, clear thinking, and sound judgment. We put that idea into practice by making technology easier to understand and better decisions easier to make.</p>
+          </div>
+        </section>
+
+        <section class="about-section" aria-labelledby="editorial-heading">
+          <div>
+            <h2 id="editorial-heading">Our Editorial Approach</h2>
+            <p>Our articles may draw on official product information, published technical specifications, publicly available reviews, and user feedback. The sources used can vary by article.</p>
+            <p>We do not suggest that a product was tested by NOVIQ unless the article clearly says so. We aim to present information in a clear, balanced way, including relevant strengths, limitations, and details readers may want to compare.</p>
+          </div>
+        </section>
+
+        <section class="about-section" aria-labelledby="money-heading">
+          <div>
+            <h2 id="money-heading">How We Make Money</h2>
+            <p>Running NOVIQ takes time and resources, and affiliate partnerships help support our work. When you purchase a product through certain links on our website, we may earn a commission at no additional cost to you.</p>
+            <p>But earning a commission is never the reason we recommend a product. We believe our readers deserve honest information and recommendations that genuinely help them make better decisions. Our content is guided by product specifications, available research, independent reviews, and careful comparisons. We aim to present both the advantages and limitations of the products we cover, rather than simply highlight their selling points.</p>
+            <p>We don't believe in recommending a product just because it offers a better commercial opportunity. Our editorial decisions are based on the information available and what we believe is most useful to our readers, not on affiliate commissions or relationships with manufacturers.</p>
+            <p>Ultimately, our most valuable asset is your trust. We'd rather help you find the right product than persuade you to buy the wrong one.</p>
+          </div>
+        </section>
+
+        <section class="about-section" aria-labelledby="commitment-heading">
+          <div>
+            <h2 id="commitment-heading">Our Commitment</h2>
+            <p>Reader trust and transparent information matter to us. When an article contains affiliate links, we disclose that relationship through an Affiliate Disclosure or a clear notice on the page.</p>
+            <p>Affiliate partnerships do not change our commitment to presenting product information as clearly and objectively as possible. Readers can learn more on our <a href="/affiliate-disclosure">Affiliate Disclosure</a> page.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .about-page{min-height:65vh;padding:36px 24px 96px;background:#f5f6f8;color:#171b24}
+  .about-container{width:min(1000px,100%);margin:0 auto}
+  .breadcrumbs{display:flex;gap:10px;margin:0 0 48px;color:#687386;font-size:14px}
+  .breadcrumbs a:hover{color:#4263d5}
+  .about-intro{max-width:900px;margin:0 auto 28px}
+  .about-intro h1{margin:0;color:#171b24;font:750 clamp(44px,5.3vw,64px)/1.08 'Manrope',sans-serif;letter-spacing:-.055em}
+  .about-sections{max-width:900px;margin:0 auto;border-top:1px solid #dfe4ec}
+  .about-section{padding:35px 0;border-bottom:1px solid #dfe4ec}
+  .about-section h2{margin:0 0 15px;color:#171b24;font:700 30px/1.2 'Manrope',sans-serif;letter-spacing:-.04em}
+  .about-section p{max-width:760px;margin:0 0 13px;color:#566174;font-size:17px;line-height:1.72}
+  .about-section p:last-child{margin-bottom:0}
+  .mission-statement{color:#202a3a!important;font:600 clamp(21px,2.4vw,27px)/1.45 'Manrope',sans-serif!important;letter-spacing:-.025em}
+  .about-section a{color:#344fae;text-decoration:underline;text-decoration-color:#a9b7e8;text-underline-offset:3px}
+  .about-section a:hover{color:#4263d5}
+  @media(max-width:640px){.about-page{padding:28px 20px 68px}.breadcrumbs{margin-bottom:32px;font-size:13px}.about-intro{margin-bottom:22px}.about-section p{font-size:16px;line-height:1.68}.about-section{padding:28px 0}.about-section h2{font-size:26px}}
+</style>

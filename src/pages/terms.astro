@@ -1,0 +1,38 @@
+---
+import PolicyPage from '../components/PolicyPage.astro';
+
+const sections = [
+  {
+    heading: 'Informational content',
+    paragraphs: [
+      'NOVIQ provides general information about consumer technology to support research and purchasing decisions. Website content is not professional, technical, or other individualized advice, and it may not fit every reader’s needs.',
+    ],
+  },
+  {
+    heading: 'Product information can change',
+    paragraphs: [
+      'Product specifications, features, software support, prices, availability, and retailer policies may change without notice. We aim to make content useful, but cannot guarantee that every detail remains current or complete. Confirm important information with the manufacturer or seller before making a purchase.',
+    ],
+  },
+  {
+    heading: 'Copyright and permitted use',
+    paragraphs: [
+      'Unless otherwise stated, NOVIQ’s original text, design, and other site materials are protected by applicable intellectual property laws. You may view the site for personal, non-commercial use and link to its pages. You may not reproduce, republish, or commercially exploit site content without permission, except where applicable law allows.',
+    ],
+  },
+  {
+    heading: 'External links and third-party services',
+    paragraphs: [
+      'The site may link to external websites, retailers, or services for convenience and further information. NOVIQ does not control those sites, their content, availability, terms, or privacy practices. Visiting or using a third-party service is your decision and is subject to that provider’s terms.',
+    ],
+  },
+  {
+    heading: 'Updates to content and these terms',
+    paragraphs: [
+      'NOVIQ may revise, remove, or update site content and these terms as the site develops. The current version will be posted on this page with its latest update date.',
+    ],
+  },
+];
+---
+
+<PolicyPage title="Terms of Use" description="Terms for using NOVIQ’s general technology information, guides, and external links." sections={sections} />

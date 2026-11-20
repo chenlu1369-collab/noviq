@@ -1,0 +1,40 @@
+---
+import PolicyPage from '../components/PolicyPage.astro';
+
+const sections = [
+  {
+    heading: 'Information handled when you visit',
+    paragraphs: [
+      'When a website is requested, the hosting and delivery services used to serve it may process basic technical information such as an IP address, browser and device details, requested pages, referral information, and request times. This can be used to deliver and protect the site. The exact information and retention periods depend on the services in use.',
+      'NOVIQ currently has no analytics service such as Google Analytics 4 configured. The newsletter form shown on the site is a visual preview and does not submit information. No contact form is currently available.',
+    ],
+  },
+  {
+    heading: 'Information you choose to provide',
+    paragraphs: [
+      'If NOVIQ enables a contact form or another submission feature in the future, information you enter may be processed to respond to your request or provide the feature you chose to use. We will update this policy before collecting information through a new feature and explain how to reach us.',
+    ],
+  },
+  {
+    heading: 'Cookies and analytics',
+    paragraphs: [
+      'NOVIQ has not currently enabled analytics, advertising trackers, or a cookie-based personalization service. Hosting or embedded third-party resources may use technical storage or receive connection information as part of delivering their service. If we add analytics or optional cookies, we will update this policy to describe the tools, purposes, and any available choices before they are used.',
+    ],
+  },
+  {
+    heading: 'Third-party services and affiliate links',
+    paragraphs: [
+      'Some pages load resources from third parties, such as externally hosted images or fonts. Your browser may connect directly to those providers to retrieve the resources, and their own privacy terms apply to that activity.',
+      'If an article links to a retailer or affiliate partner, following that link takes you to a third-party site. That site may collect information under its own privacy policy. NOVIQ does not control the data practices of external providers or merchants.',
+    ],
+  },
+  {
+    heading: 'Questions and future updates',
+    paragraphs: [
+      'A dedicated public contact address or privacy request channel has not yet been published. We will add a contact method here before enabling a form or collecting information directly from visitors. This policy may be updated as site features and service providers change.',
+    ],
+  },
+];
+---
+
+<PolicyPage title="Privacy Policy" description="How NOVIQ handles technical information, voluntary submissions, cookies, and third-party services." sections={sections} />

@@ -1,0 +1,54 @@
+---
+import { categories } from '../data/homepage';
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isActive = (path: string) => path === '/' ? currentPath === '/' : currentPath === path || currentPath.startsWith(`${path}/`);
+---
+
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="NOVIQ home"><img src="/images/noviq-logo.png" alt="NOVIQ – Technology Reviews and Buying Guides" /></a>
+  <nav aria-label="Main navigation">
+    <a class={isActive('/') ? 'active' : undefined} aria-current={isActive('/') ? 'page' : undefined} href="/">Home</a><a class={isActive('/reviews') ? 'active' : undefined} aria-current={isActive('/reviews') ? 'page' : undefined} href="/reviews">Reviews</a>
+    <div class="nav-dropdown" data-category-dropdown>
+      <button class:list={['nav-dropdown-trigger', isActive('/categories') && 'active']} type="button" aria-expanded="false" aria-controls="category-menu">Categories <span class="nav-caret" aria-hidden="true"></span></button>
+      <div class="nav-dropdown-menu" id="category-menu" hidden>
+        {categories.map((category) => <a class={isActive(category.href) ? 'active' : undefined} aria-current={isActive(category.href) ? 'page' : undefined} href={category.href}>{category.title}<span aria-hidden="true">↗</span></a>)}
+      </div>
+    </div>
+    <a class={isActive('/best-picks') ? 'active' : undefined} aria-current={isActive('/best-picks') ? 'page' : undefined} href="/best-picks">Best Picks</a><a class={isActive('/about') ? 'active' : undefined} aria-current={isActive('/about') ? 'page' : undefined} href="/about">About</a>
+  </nav>
+  <a class="search-link" href="/search" aria-label="Search NOVIQ"><span>Search</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></a>
+</header>
+
+<script>
+  const categoryDropdown = document.querySelector<HTMLElement>('[data-category-dropdown]');
+  const categoryTrigger = categoryDropdown?.querySelector<HTMLButtonElement>('.nav-dropdown-trigger');
+  const categoryMenu = categoryDropdown?.querySelector<HTMLElement>('.nav-dropdown-menu');
+
+  if (categoryDropdown && categoryTrigger && categoryMenu) {
+    const setOpen = (open: boolean) => {
+      categoryMenu.hidden = !open;
+      categoryTrigger.setAttribute('aria-expanded', String(open));
+    };
+
+    categoryDropdown.addEventListener('pointerenter', () => {
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) setOpen(true);
+    });
+    categoryDropdown.addEventListener('pointerleave', () => {
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) setOpen(false);
+    });
+    categoryDropdown.addEventListener('focusin', () => setOpen(true));
+    categoryDropdown.addEventListener('focusout', (event) => {
+      if (!categoryDropdown.contains(event.relatedTarget as Node | null)) setOpen(false);
+    });
+    categoryTrigger.addEventListener('click', () => setOpen(categoryMenu.hidden));
+    document.addEventListener('click', (event) => {
+      if (!categoryDropdown.contains(event.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !categoryMenu.hidden) {
+        setOpen(false);
+        categoryTrigger.focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleBody from './ArticleBody.astro';
+import ArticleProductCard from './ArticleProductCard.astro';
+import ArticleProsCons from './ArticleProsCons.astro';
+import type { Article } from '../types/article';
+
+interface Props { article: Article }
+const { article } = Astro.props;
+---
+
+<Layout title={`${article.title} | NOVIQ`} description={article.summary}>
+  <main class="article-page">
+    <div class="article-container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/reviews">Reviews</a><span aria-hidden="true">/</span><span>{article.category}</span></nav>
+      <header class="article-header">
+        <span class="article-category">{article.category}</span>
+        <h1>{article.title}</h1>
+        <div class="article-byline">{article.author && <span>By <strong>{article.author}</strong></span>}<span><time datetime={article.publishedAt}>{article.publishedLabel}</time></span><span>{article.readingTime}</span></div>
+      </header>
+      <figure class="article-cover"><img src={article.coverImage} alt={article.coverAlt} fetchpriority="high" /><figcaption>Illustrative image for this demonstration article.</figcaption></figure>
+
+      <div class="reading-layout">
+        <div class="article-main">
+          <div class="article-copy">
+            <p class="demo-disclosure">Demonstration article. This illustrative content does not describe hands-on product testing.</p>
+            <ArticleBody blocks={article.blocks} />
+            <ArticleProsCons pros={article.pros} cons={article.cons} />
+            <p class="editorial-note">This preview is for layout demonstration only. It contains no product rating, price, purchase link, or first-hand test result.</p>
+          </div>
+        </div>
+        <aside class="article-sidebar" aria-label="Article contents and product recommendation">
+          <nav class="table-of-contents" aria-label="In this article">
+            <p>In this article</p>
+            <ol>{article.tableOfContents.map((item) => <li class:list={[item.level === 3 && 'toc-subsection']}><a href={`#${item.id}`}>{item.label}</a></li>)}</ol>
+          </nav>
+          <ArticleProductCard product={article.product} />
+        </aside>
+      </div>
+
+      <section class="related-section" aria-labelledby="related-heading">
+        <div class="related-heading"><div><p class="related-kicker">KEEP EXPLORING</p><h2 id="related-heading">Related reading</h2></div><p>More practical guides are on the way.</p></div>
+        <div class="related-grid">{article.related.map((item) => <article class="related-card"><span>{item.category}</span><h3>{item.title}</h3><p>Coming soon</p></article>)}</div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .article-page{background:#f5f6f8;color:#171b24;padding:34px 24px 96px}
+  .article-container{width:min(1160px,100%);margin:0 auto}
+  .breadcrumbs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 35px;color:#687386;font-size:14px}
+  .breadcrumbs a:hover{color:#4263d5}.breadcrumbs span:last-child{color:#344054}
+  .article-header{max-width:none;margin:0 0 30px;text-align:left}
+  .article-category{display:inline-flex;padding:7px 12px;border:1px solid #dbe2f2;border-radius:999px;background:#eef2ff;color:#344fae;font-size:13px;font-weight:700}
+  .article-header h1{max-width:75%;margin:18px 0 18px;color:#171b24;font:750 clamp(38px,4.6vw,58px)/1.08 'Manrope',sans-serif;letter-spacing:-.055em;white-space:normal;overflow-wrap:break-word}
+  .article-byline{display:flex;justify-content:flex-start;flex-wrap:wrap;gap:10px 20px;margin-top:0;color:#687386;font-size:14px}
+  .article-byline strong{color:#344054;font-weight:700}
+  .demo-disclosure{display:inline-block;margin:18px 0 0;padding:9px 13px;border-radius:8px;background:#e9edf3;color:#4d596b;font-size:13px;line-height:1.5}
+  .article-cover{width:100%;margin:0 0 48px;overflow:hidden;border-radius:18px;background:#e3e7ed}
+  .article-cover img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center 48%}
+  .article-cover figcaption{padding:10px 15px;background:#fff;color:#687386;font-size:13px}
+  .reading-layout{display:grid;grid-template-columns:minmax(0,760px) minmax(250px,310px);justify-content:center;gap:clamp(34px,5vw,64px);align-items:start}
+  .article-main{min-width:0}
+  .article-sidebar{position:sticky;top:24px;display:grid;gap:20px;min-width:0;max-height:calc(100vh - 48px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .table-of-contents{padding:22px 19px;border:1px solid #e2e6ed;border-radius:14px;background:#fff}
+  .table-of-contents>p{margin:0 0 13px;color:#171b24;font:700 16px 'Manrope',sans-serif}
+  .table-of-contents ol{display:grid;gap:10px;margin:0;padding-left:18px;color:#4263d5}
+  .table-of-contents li{padding-left:2px;font-size:14px;line-height:1.45}
+  .table-of-contents li.toc-subsection{margin-left:10px;font-size:13px;list-style-type:circle}
+  .table-of-contents a{color:#566174}.table-of-contents a:hover{color:#4263d5}
+  .editorial-note{margin:32px 0;padding:15px 18px;border-left:3px solid #4263d5;background:#fff;color:#566174;font-size:14px;line-height:1.6}
+  .related-section{margin:88px auto 0;padding-top:38px;border-top:1px solid #dfe4ec}
+  .related-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+  .related-kicker{margin:0 0 8px;color:#4263d5;font-size:12px;font-weight:700;letter-spacing:.09em}
+  .related-heading h2{margin:0;color:#171b24;font:700 34px/1.2 'Manrope',sans-serif;letter-spacing:-.04em}
+  .related-heading>p{margin:0;color:#687386;font-size:15px}
+  .related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .related-card{min-height:170px;padding:21px;border:1px solid #e2e6ed;border-radius:14px;background:#fff}
+  .related-card>span{color:#4263d5;font-size:13px;font-weight:700}
+  .related-card h3{margin:12px 0;color:#202a3a;font:650 19px/1.35 'Manrope',sans-serif}
+  .related-card p{margin:0;color:#687386;font-size:14px}
+  @media(max-width:1100px){.reading-layout{grid-template-columns:minmax(0,1fr) 290px;gap:32px}}
+  @media(max-width:900px){.reading-layout{grid-template-columns:minmax(0,1fr) 260px;gap:28px}}
+  @media(max-width:700px){.article-page{padding:25px 20px 68px}.breadcrumbs{margin-bottom:26px;font-size:13px}.article-header{margin-bottom:24px}.article-header h1{max-width:100%;font-size:clamp(34px,9vw,48px)}.article-byline{font-size:13px;gap:9px 15px}.article-cover{margin:0 0 30px;border-radius:14px}.article-cover img{aspect-ratio:16/9}.reading-layout{grid-template-columns:minmax(0,1fr);gap:30px}.article-sidebar{position:static;max-height:none;overflow:visible;overscroll-behavior:auto}.related-section{margin-top:60px;padding-top:29px}.related-heading{align-items:flex-start;flex-direction:column;gap:10px}.related-heading h2{font-size:29px}.related-grid{grid-template-columns:1fr}.related-card{min-height:0;padding:18px}}
+</style>

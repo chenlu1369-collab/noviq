@@ -1,0 +1,23 @@
+---
+interface Props {
+  pros: readonly string[];
+  cons: readonly string[];
+}
+
+const { pros, cons } = Astro.props;
+---
+
+<section class="pros-cons" aria-label="General considerations">
+  <div class="consideration pros"><h2>Potential advantages</h2><ul>{pros.map((item) => <li>{item}</li>)}</ul></div>
+  <div class="consideration cons"><h2>Things to consider</h2><ul>{cons.map((item) => <li>{item}</li>)}</ul></div>
+</section>
+
+<style>
+  .pros-cons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:36px 0}
+  .consideration{padding:22px;border:1px solid #e2e6ed;border-radius:14px;background:#fff}
+  .consideration h2{margin:0 0 14px;color:#171b24;font:700 19px/1.3 'Manrope',sans-serif}
+  .consideration ul{margin:0;padding-left:19px;color:#566174;font-size:15px;line-height:1.6}
+  .consideration li{padding-left:4px;margin:9px 0}
+  .pros li::marker{color:#4263d5}.cons li::marker{color:#687386}
+  @media(max-width:640px){.pros-cons{grid-template-columns:1fr}.consideration{padding:19px}}
+</style>

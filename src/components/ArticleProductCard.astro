@@ -1,0 +1,39 @@
+---
+import type { ArticleProduct } from '../types/article';
+
+interface Props {
+  product: ArticleProduct;
+}
+
+const { product } = Astro.props;
+const affiliateLinks = (product.affiliateLinks ?? []).filter((link) => link.active !== false && /^https:\/\//i.test(link.url));
+---
+
+<section class="product-recommendation" aria-labelledby="product-recommendation-title">
+  <p class="eyebrow">OUR PICK</p>
+  <div class="product-image"><img src={product.image} alt={product.imageAlt} loading="lazy" /></div>
+  <div class="product-copy">
+    <h2 id="product-recommendation-title">{product.name}</h2>
+    <p>{product.description}</p>
+  </div>
+  <div class="merchant-options" aria-label="Retailer links">
+    {affiliateLinks.length > 0 ? affiliateLinks.map((link) => <a class="product-link" href={link.url} target="_blank" rel="sponsored nofollow noopener">Check Price <span>at {link.merchant}{link.region ? ` · ${link.region}` : ''}</span></a>) : <button class="product-link unavailable" type="button" disabled aria-disabled="true">Links coming soon</button>}
+  </div>
+  <p class="affiliate-disclosure">If a retailer link is added, NOVIQ may earn a commission at no extra cost to you.</p>
+</section>
+
+<style>
+  .product-recommendation{display:grid;gap:15px;margin:0;padding:18px;border:1px solid #d8e0ec;border-radius:16px;background:#eaf0f7;box-shadow:0 8px 24px #17233f0a}
+  .product-recommendation>.eyebrow{margin:0;color:#4263d5;font-size:12px;font-weight:750;letter-spacing:.1em}
+  .product-image{overflow:hidden;aspect-ratio:1.45;border-radius:12px;background:#d7dee8}
+  .product-image img{width:100%;height:100%;object-fit:cover}
+  .product-copy h2{margin:0 0 7px;color:#171b24;font:700 20px/1.25 'Manrope',sans-serif;letter-spacing:-.03em}
+  .product-copy>p{margin:0;color:#566174;font-size:15px;line-height:1.55}
+  .merchant-options{display:grid;gap:9px}
+  .product-link{width:100%;min-height:44px;padding:11px 13px;border:0;border-radius:8px;background:#4263d5;color:#fff;display:flex;align-items:center;justify-content:center;gap:4px;text-align:center;font:700 14px/1.35 'DM Sans',sans-serif;transition:background .2s}
+  a.product-link:hover{background:#3452bb}
+  .product-link span{font-size:12px;font-weight:500;opacity:.9}
+  .product-link.unavailable{background:#9ba9c8;cursor:not-allowed}
+  .affiliate-disclosure{margin:0;color:#566174;font-size:12px;line-height:1.5}
+  @media(max-width:700px){.product-recommendation{grid-template-columns:1fr;gap:14px;padding:17px}.product-image{aspect-ratio:1.8}}
+</style>

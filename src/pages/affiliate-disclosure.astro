@@ -1,0 +1,27 @@
+---
+import PolicyPage from '../components/PolicyPage.astro';
+
+const sections = [
+  {
+    heading: 'Affiliate links',
+    paragraphs: [
+      'Some articles on NOVIQ may include links to products through affiliate marketing programs. If you choose to buy through one of these links, NOVIQ may receive a commission from the retailer or program.',
+      'A commission does not add to the price you pay. Not every link on this website is an affiliate link, and a link should not be taken as an endorsement based only on the commercial relationship.',
+    ],
+  },
+  {
+    heading: 'Editorial independence',
+    paragraphs: [
+      'Affiliate relationships do not change our aim to present product information clearly and objectively. We seek to explain relevant features and limitations so readers can make their own decisions.',
+    ],
+  },
+  {
+    heading: 'Before you buy',
+    paragraphs: [
+      'Product details, availability, and terms can change. Before purchasing, confirm current specifications, price, stock, shipping, and return policies directly with the manufacturer or retailer. The retailer’s terms apply to purchases made on its website.',
+    ],
+  },
+];
+---
+
+<PolicyPage title="Affiliate Disclosure" description="Learn how affiliate links may support NOVIQ and how we approach editorial independence." sections={sections} />
