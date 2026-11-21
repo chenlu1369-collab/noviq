@@ -16,11 +16,11 @@ collections:
     label_singular: 文章
     folder: src/data/cms-articles
     create: true
-    extension: json
-    format: json
+    extension: md
+    format: frontmatter
     identifier_field: slug
     slug: '{{slug}}'
-    summary: '{{category}} · {{title}}'
+    summary: '{{categorySlug}} · {{title}}'
     preview_path: 'reviews/{{slug}}/'
     fields:
       - label: 标题
@@ -30,10 +30,13 @@ collections:
         name: slug
         widget: string
         pattern:
-          - '^(?!(?:example-review|understanding-smartphone-specifications|choosing-a-laptop-for-everyday-use|choosing-a-smart-speaker)$)[a-z0-9]+(?:-[a-z0-9]+)*$'
-          - 请使用小写英文字母、数字和连字符，并避开现有文章的 URL 标识。
-      - label: 分类
+          - '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          - 请使用小写英文字母、数字和连字符。
+      - label: 分类标签
         name: category
+        widget: string
+      - label: 网站分类
+        name: categorySlug
         widget: select
         options:
           - label: 智能手机 Smartphones
@@ -55,12 +58,24 @@ collections:
         name: imageAlt
         widget: string
         required: false
+      - label: 封面图片说明
+        name: imageCaption
+        widget: string
+        required: false
       - label: 发布日期
         name: date
         widget: datetime
         date_format: 'YYYY-MM-DD'
         time_format: false
         picker_utc: true
+      - label: 日期显示文字
+        name: publishedLabel
+        widget: string
+        required: false
+      - label: 阅读时间
+        name: readingTime
+        widget: string
+        required: false
       - label: 作者
         name: author
         widget: string
@@ -73,7 +88,74 @@ collections:
         name: seoDescription
         widget: text
         required: false
+      - label: 演示文章
+        name: demo
+        widget: boolean
+        default: false
       - label: 正文
         name: body
         widget: markdown
-        hint: 使用 Markdown 编写。请用 ## 和 ### 作为章节标题；页面会自动生成文章目录。
+        hint: 使用 Markdown 编写。请用 ## 和 ### 作为章节标题；页面会自动生成文章目录。图片说明可紧跟在图片行后并使用斜体；表格说明可使用 **Table caption: text** 紧贴表格标题行。
+      - label: 产品推荐
+        name: product
+        widget: object
+        required: false
+        fields:
+          - label: 产品名称
+            name: name
+            widget: string
+          - label: 简介
+            name: description
+            widget: text
+          - label: 产品图片
+            name: image
+            widget: image
+          - label: 图片替代文字
+            name: imageAlt
+            widget: string
+          - label: 商家联盟链接
+            name: affiliateLinks
+            widget: list
+            required: false
+            fields:
+              - label: 商家
+                name: merchant
+                widget: string
+              - label: 联盟链接
+                name: url
+                widget: string
+              - label: 地区
+                name: region
+                widget: string
+                required: false
+              - label: 启用
+                name: active
+                widget: boolean
+                default: false
+      - label: 优点
+        name: pros
+        widget: list
+        required: false
+        field:
+          label: 优点
+          name: point
+          widget: string
+      - label: 局限
+        name: cons
+        widget: list
+        required: false
+        field:
+          label: 局限
+          name: point
+          widget: string
+      - label: 相关内容
+        name: related
+        widget: list
+        required: false
+        fields:
+          - label: 分类
+            name: category
+            widget: string
+          - label: 标题
+            name: title
+            widget: string

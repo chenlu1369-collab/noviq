@@ -1,33 +1,41 @@
+import type { MarkdownInstance } from 'astro';
+import type { Article, ArticleContentBlock, ArticleProduct } from '../../types/article';
 import { exampleReview } from './example-review';
 import { smartphoneGuide } from './smartphone-guide';
 import { laptopGuide } from './laptop-guide';
 import { smartSpeakerGuide } from './smart-speaker-guide';
-import type { Article, ArticleContentBlock, ArticleInlineToken } from '../../types/article';
 
 interface CmsArticle {
   title: string;
   slug: string;
   category: string;
+  categorySlug: string;
   description: string;
   image: string;
   imageAlt?: string;
+  imageCaption?: string;
   date: string;
+  publishedLabel?: string;
+  readingTime?: string;
   author?: string;
   seoTitle?: string;
   seoDescription?: string;
-  body: string;
+  demo?: boolean;
+  product?: ArticleProduct;
+  pros?: string[];
+  cons?: string[];
+  related?: { category: string; title: string }[];
 }
 
-const categories: Record<string, { title: string; slug: string }> = {
-  smartphones: { title: 'Smartphones', slug: 'smartphones' },
-  computers: { title: 'Computers', slug: 'computers' },
-  headphones: { title: 'Headphones', slug: 'headphones' },
-  'smart-speakers': { title: 'Smart Speakers', slug: 'smart-speakers' },
+const categoryTitles: Record<string, string> = {
+  smartphones: 'Smartphones',
+  computers: 'Computers',
+  headphones: 'Headphones',
+  'smart-speakers': 'Smart Speakers',
 };
 
-const cmsFiles = import.meta.glob<CmsArticle>('../cms-articles/*.json', {
+const cmsFiles = import.meta.glob<MarkdownInstance<CmsArticle>>('../cms-articles/*.md', {
   eager: true,
-  import: 'default',
 });
 
 function slugifyHeading(text: string) {
@@ -50,8 +58,8 @@ function plainText(text: string) {
     .trim();
 }
 
-function parseInlineMarkdown(text: string): ArticleInlineToken[] {
-  const tokens: ArticleInlineToken[] = [];
+function parseInlineMarkdown(text: string) {
+  const tokens: NonNullable<Extract<ArticleContentBlock, { type: 'paragraph' }>['parts']> = [];
   const pattern = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|__([^_]+)__|`([^`]+)`|\*([^*]+)\*|_([^_]+)_/g;
   let cursor = 0;
   for (const match of text.matchAll(pattern)) {
@@ -79,15 +87,14 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
 
   const flushParagraph = () => {
     if (paragraph.length) {
-      const text = plainText(paragraph.join(' '));
-      if (text) blocks.push({ type: 'paragraph', text, parts: parseInlineMarkdown(paragraph.join(' ')) });
+      const source = paragraph.join(' ');
+      const text = plainText(source);
+      if (text) blocks.push({ type: 'paragraph', text, parts: parseInlineMarkdown(source) });
       paragraph = [];
     }
   };
   const flushList = () => {
-    if (list.length && listOrdered !== undefined) {
-      blocks.push({ type: 'list', ordered: listOrdered, items: list.map(plainText) });
-    }
+    if (list.length && listOrdered !== undefined) blocks.push({ type: 'list', ordered: listOrdered, items: list.map(plainText) });
     list = [];
     listOrdered = undefined;
   };
@@ -105,12 +112,7 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
       flushParagraph();
       flushList();
       const text = plainText(heading[2]);
-      blocks.push({
-        type: 'heading',
-        level: heading[1].length === 3 ? 3 : 2,
-        id: slugifyHeading(text),
-        text,
-      });
+      blocks.push({ type: 'heading', level: heading[1].length === 3 ? 3 : 2, id: slugifyHeading(text), text });
       continue;
     }
 
@@ -118,7 +120,9 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
     if (image) {
       flushParagraph();
       flushList();
-      blocks.push({ type: 'image', alt: image[1], src: image[2] });
+      const captionMatch = lines[index + 1]?.trim().match(/^\*([^*]+)\*$/);
+      blocks.push({ type: 'image', alt: image[1], src: image[2], ...(captionMatch ? { caption: captionMatch[1] } : {}) });
+      if (captionMatch) index += 1;
       continue;
     }
 
@@ -133,6 +137,14 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
     }
 
     if (line.startsWith('|') && index + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[index + 1])) {
+      let caption: string | undefined;
+      if (paragraph.length === 1) {
+        const captionMatch = paragraph[0].match(/^\*\*Table caption:\s*(.+)\*\*$/);
+        if (captionMatch) {
+          caption = captionMatch[1];
+          paragraph = [];
+        }
+      }
       flushParagraph();
       flushList();
       const parseCells = (value: string) => value.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => plainText(cell));
@@ -144,7 +156,7 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
         index += 1;
       }
       index -= 1;
-      blocks.push({ type: 'table', headers, rows });
+      blocks.push({ type: 'table', ...(caption ? { caption } : {}), headers, rows });
       continue;
     }
 
@@ -157,25 +169,27 @@ function parseMarkdown(markdown: string): ArticleContentBlock[] {
   return blocks;
 }
 
-function toArticle(entry: CmsArticle): Article | undefined {
-  const category = categories[entry.category];
-  if (!category || !entry.title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.slug) || !entry.description || !entry.image || !entry.date) return undefined;
+function toArticle(entry: CmsArticle, body: string, filePath: string): Article {
+  const categoryTitle = categoryTitles[entry.categorySlug];
+  if (!categoryTitle) throw new Error(`Unknown article category "${entry.categorySlug}" in ${filePath}.`);
+  if (!entry.title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.slug) || !entry.description || !entry.image || !entry.date) {
+    throw new Error(`Article ${filePath} is missing a required field or has an invalid slug.`);
+  }
 
-  const blocks = parseMarkdown(entry.body || '');
-  const tableOfContents = blocks
-    .filter((block): block is Extract<ArticleContentBlock, { type: 'heading' }> => block.type === 'heading')
-    .map(({ text, id, level }) => ({ label: text, id, level }));
+  const blocks = parseMarkdown(body);
+  const headings = blocks.filter((block): block is Extract<ArticleContentBlock, { type: 'heading' }> => block.type === 'heading');
+  const tableOfContents = headings.map(({ text, id, level }) => ({ label: text, id, level }));
   const publishedAt = entry.date.slice(0, 10);
   const parsedDate = new Date(`${publishedAt}T00:00:00`);
-  const publishedLabel = Number.isNaN(parsedDate.getTime())
+  const publishedLabel = entry.publishedLabel || (Number.isNaN(parsedDate.getTime())
     ? publishedAt
-    : parsedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const wordCount = (entry.body || '').trim().split(/\s+/).filter(Boolean).length;
+    : parsedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  const wordCount = body.trim().split(/\s+/).filter(Boolean).length;
 
   return {
     slug: entry.slug,
-    category: category.title,
-    categorySlug: category.slug,
+    category: entry.category || categoryTitle,
+    categorySlug: entry.categorySlug,
     title: entry.title,
     summary: entry.description,
     seoTitle: entry.seoTitle,
@@ -183,30 +197,31 @@ function toArticle(entry: CmsArticle): Article | undefined {
     author: entry.author?.trim() || undefined,
     publishedAt,
     publishedLabel,
-    readingTime: `${Math.max(1, Math.ceil(wordCount / 200))} min read`,
+    readingTime: entry.readingTime || `${Math.max(1, Math.ceil(wordCount / 200))} min read`,
     coverImage: entry.image,
     coverAlt: entry.imageAlt?.trim() || entry.title,
+    imageCaption: entry.imageCaption,
     tableOfContents,
     blocks,
-    demo: false,
+    product: entry.product,
+    pros: entry.pros,
+    cons: entry.cons,
+    related: entry.related,
+    demo: entry.demo ?? false,
   };
 }
 
-const existingSlugs = new Set([exampleReview, smartphoneGuide, laptopGuide, smartSpeakerGuide].map((article) => article.slug));
+const legacyArticles = [exampleReview, smartphoneGuide, laptopGuide, smartSpeakerGuide];
 const cmsSlugs = new Set<string>();
-const cmsArticles = Object.entries(cmsFiles).flatMap(([filePath, entry]) => {
-  const article = toArticle(entry);
-  if (!article) return [];
-  if (existingSlugs.has(article.slug)) {
-    throw new Error(`CMS article slug "${article.slug}" in ${filePath} conflicts with an existing TypeScript article. Choose a different slug.`);
-  }
-  if (cmsSlugs.has(article.slug)) {
-    throw new Error(`CMS article slug "${article.slug}" is used more than once. Each article needs a unique slug.`);
-  }
+const cmsArticles = Object.entries(cmsFiles).map(([filePath, markdown]) => {
+  const article = toArticle(markdown.frontmatter, markdown.rawContent(), filePath);
+  if (cmsSlugs.has(article.slug)) throw new Error(`CMS article slug "${article.slug}" is used more than once.`);
   cmsSlugs.add(article.slug);
-  return [article];
+  return article;
 });
 
-// Keep legacy TypeScript articles untouched while allowing CMS-managed JSON articles to join the same routes and lists.
-export const articles: Article[] = [exampleReview, smartphoneGuide, laptopGuide, smartSpeakerGuide, ...cmsArticles]
-  .sort((first, second) => second.publishedAt.localeCompare(first.publishedAt));
+// CMS files take precedence for migrated slugs; untouched TypeScript articles remain available as a safe fallback.
+export const articles: Article[] = [
+  ...legacyArticles.filter((article) => !cmsSlugs.has(article.slug)),
+  ...cmsArticles,
+].sort((first, second) => second.publishedAt.localeCompare(first.publishedAt));
