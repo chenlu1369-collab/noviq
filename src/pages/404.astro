@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Page Not Found | NOVIQ"
+  description="The page you requested could not be found. Browse NOVIQ reviews or return to the homepage."
+  noindex={true}
+>
+  <main class="not-found-page">
+    <section class="not-found-content" aria-labelledby="not-found-title">
+      <p class="not-found-label">404 · PAGE NOT FOUND</p>
+      <h1 id="not-found-title">This page isn’t here.</h1>
+      <p>The link may be outdated, or the page may have moved. Explore our latest reviews or head back to the homepage.</p>
+      <div class="not-found-actions">
+        <a class="primary-action" href="/">Return home</a>
+        <a class="secondary-action" href="/reviews/">Browse reviews <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .not-found-page{min-height:58vh;display:grid;place-items:center;padding:72px 24px;background:#f5f6f8;color:#171b24}
+  .not-found-content{width:min(680px,100%);padding:56px;border:1px solid #e2e6ed;border-radius:18px;background:#fff}
+  .not-found-label{margin:0 0 16px;color:#4263d5;font-size:13px;font-weight:700;letter-spacing:.1em}
+  .not-found-content h1{margin:0;color:#171b24;font:750 clamp(38px,6vw,58px)/1.08 'Manrope',sans-serif;letter-spacing:-.05em}
+  .not-found-content>p:not(.not-found-label){max-width:520px;margin:20px 0 0;color:#566174;font-size:17px;line-height:1.65}
+  .not-found-actions{display:flex;align-items:center;flex-wrap:wrap;gap:22px;margin-top:30px}
+  .primary-action{display:inline-flex;min-height:48px;align-items:center;padding:0 20px;border-radius:8px;background:#4263d5;color:#fff;font-size:15px;font-weight:700}
+  .primary-action:hover{background:#3452bb}
+  .secondary-action{color:#344fae;font-size:15px;font-weight:700}
+  .secondary-action span{margin-left:6px}
+  @media(max-width:600px){.not-found-page{min-height:50vh;padding:42px 20px}.not-found-content{padding:32px 24px}.not-found-content>p:not(.not-found-label){font-size:16px}}
+</style>

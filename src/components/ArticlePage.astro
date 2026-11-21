@@ -8,9 +8,26 @@ import type { Article } from '../types/article';
 interface Props { article: Article }
 const { article } = Astro.props;
 const isDemo = article.demo !== false;
+const articleUrl = `https://noviq-as3.pages.dev/reviews/${article.slug}/`;
+const articleImageUrl = new URL(article.coverImage, 'https://noviq-as3.pages.dev').href;
+const articleStructuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.title,
+  description: article.seoDescription || article.summary,
+  image: [articleImageUrl],
+  datePublished: article.publishedAt,
+  articleSection: article.category,
+  inLanguage: 'en',
+  url: articleUrl,
+  mainEntityOfPage: articleUrl,
+  publisher: { '@type': 'Organization', name: 'NOVIQ' },
+  ...(article.author ? { author: { '@type': 'Person', name: article.author } } : {}),
+}).replace(/</g, '\\u003c');
 ---
 
-<Layout title={article.seoTitle || `${article.title} | NOVIQ`} description={article.seoDescription || article.summary}>
+<Layout title={article.seoTitle || `${article.title} | NOVIQ`} description={article.seoDescription || article.summary} socialImage={article.coverImage} socialImageAlt={article.coverAlt} openGraphType="article">
+  <script type="application/ld+json" set:html={articleStructuredData}></script>
   <main class="article-page">
     <div class="article-container">
       <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/reviews">Reviews</a><span aria-hidden="true">/</span><span>{article.category}</span></nav>

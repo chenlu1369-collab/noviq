@@ -1,6 +1,26 @@
 ---
-interface Props { title?: string; description?: string }
-const { title = 'NOVIQ — Explore Technology. Discover Value.', description = 'Thoughtful technology reviews, practical buying guides, and clear insights to help you make smarter tech choices.' } = Astro.props;
+interface Props {
+	title?: string;
+	description?: string;
+	socialImage?: string;
+	socialImageAlt?: string;
+	openGraphType?: 'website' | 'article';
+	noindex?: boolean;
+}
+const {
+	title = 'NOVIQ — Explore Technology. Discover Value.',
+	description = 'Thoughtful technology reviews, practical buying guides, and clear insights to help you make smarter tech choices.',
+	socialImage = '/images/noviq-hero.png',
+	socialImageAlt = 'NOVIQ technology workspace',
+	openGraphType = 'website',
+	noindex = false,
+} = Astro.props;
+const siteUrl = 'https://noviq-as3.pages.dev';
+const canonicalPath = Astro.url.pathname === '/'
+	? '/'
+	: `${Astro.url.pathname.replace(/\/+$/, '')}/`;
+const canonicalUrl = new URL(canonicalPath, siteUrl).href;
+const socialImageUrl = new URL(socialImage, siteUrl).href;
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 ---
@@ -10,10 +30,26 @@ import SiteFooter from '../components/SiteFooter.astro';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<meta name="theme-color" content="#F5F6F8" />
 		<link rel="icon" type="image/png" href="/favicon-nq.png" sizes="96x96" />
+		<link rel="sitemap" href="/sitemap.xml" />
+		{!noindex && <link rel="canonical" href={canonicalUrl} />}
 		<link rel="preconnect" href="https://images.unsplash.com" />
 		<title>{title}</title>
+		<meta property="og:type" content={openGraphType} />
+		<meta property="og:site_name" content="NOVIQ" />
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:image:alt" content={socialImageAlt} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
+		<meta name="twitter:image:alt" content={socialImageAlt} />
 	</head>
 	<body>
 		<SiteHeader />
