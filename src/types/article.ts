@@ -1,5 +1,9 @@
+export type ArticleInlineToken =
+  | { type: 'text' | 'strong' | 'emphasis' | 'code'; text: string }
+  | { type: 'link'; text: string; href: string };
+
 export type ArticleContentBlock =
-  | { type: 'paragraph'; text: string }
+  | { type: 'paragraph'; text: string; parts?: ArticleInlineToken[] }
   | { type: 'heading'; level: 2 | 3; id: string; text: string }
   | { type: 'image'; src: string; alt: string; caption?: string }
   | { type: 'list'; ordered: boolean; items: string[] }
@@ -26,16 +30,20 @@ export interface Article {
   categorySlug?: string;
   title: string;
   summary: string;
+  seoTitle?: string;
+  seoDescription?: string;
   author?: string;
   publishedAt: string;
   publishedLabel: string;
   readingTime: string;
   coverImage: string;
   coverAlt: string;
+  imageCaption?: string;
   tableOfContents: { label: string; id: string; level?: 2 | 3 }[];
   blocks: ArticleContentBlock[];
-  product: ArticleProduct;
-  pros: string[];
-  cons: string[];
-  related: { category: string; title: string }[];
+  product?: ArticleProduct;
+  pros?: string[];
+  cons?: string[];
+  related?: { category: string; title: string }[];
+  demo?: boolean;
 }

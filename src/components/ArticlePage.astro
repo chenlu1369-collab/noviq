@@ -7,9 +7,10 @@ import type { Article } from '../types/article';
 
 interface Props { article: Article }
 const { article } = Astro.props;
+const isDemo = article.demo !== false;
 ---
 
-<Layout title={`${article.title} | NOVIQ`} description={article.summary}>
+<Layout title={article.seoTitle || `${article.title} | NOVIQ`} description={article.seoDescription || article.summary}>
   <main class="article-page">
     <div class="article-container">
       <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/reviews">Reviews</a><span aria-hidden="true">/</span><span>{article.category}</span></nav>
@@ -18,30 +19,30 @@ const { article } = Astro.props;
         <h1>{article.title}</h1>
         <div class="article-byline">{article.author && <span>By <strong>{article.author}</strong></span>}<span><time datetime={article.publishedAt}>{article.publishedLabel}</time></span><span>{article.readingTime}</span></div>
       </header>
-      <figure class="article-cover"><img src={article.coverImage} alt={article.coverAlt} fetchpriority="high" /><figcaption>Illustrative image for this demonstration article.</figcaption></figure>
+      <figure class="article-cover"><img src={article.coverImage} alt={article.coverAlt} fetchpriority="high" />{(isDemo || article.imageCaption) && <figcaption>{article.imageCaption || 'Illustrative image for this demonstration article.'}</figcaption>}</figure>
 
       <div class="reading-layout">
         <div class="article-main">
           <div class="article-copy">
-            <p class="demo-disclosure">Demonstration article. This illustrative content does not describe hands-on product testing.</p>
+            {isDemo && <p class="demo-disclosure">Demonstration article. This illustrative content does not describe hands-on product testing.</p>}
             <ArticleBody blocks={article.blocks} />
-            <ArticleProsCons pros={article.pros} cons={article.cons} />
-            <p class="editorial-note">This preview is for layout demonstration only. It contains no product rating, price, purchase link, or first-hand test result.</p>
+            {article.pros && article.cons && <ArticleProsCons pros={article.pros} cons={article.cons} />}
+            {isDemo && <p class="editorial-note">This preview is for layout demonstration only. It contains no product rating, price, purchase link, or first-hand test result.</p>}
           </div>
         </div>
-        <aside class="article-sidebar" aria-label="Article contents and product recommendation">
-          <nav class="table-of-contents" aria-label="In this article">
+        {article.tableOfContents.length > 0 || article.product ? <aside class="article-sidebar" aria-label={article.product ? 'Article contents and product recommendation' : 'Article contents'}>
+          {article.tableOfContents.length > 0 && <nav class="table-of-contents" aria-label="In this article">
             <p>In this article</p>
             <ol>{article.tableOfContents.map((item) => <li class:list={[item.level === 3 && 'toc-subsection']}><a href={`#${item.id}`}>{item.label}</a></li>)}</ol>
-          </nav>
-          <ArticleProductCard product={article.product} />
-        </aside>
+          </nav>}
+          {article.product && <ArticleProductCard product={article.product} />}
+        </aside> : null}
       </div>
 
-      <section class="related-section" aria-labelledby="related-heading">
+      {article.related?.length ? <section class="related-section" aria-labelledby="related-heading">
         <div class="related-heading"><div><p class="related-kicker">KEEP EXPLORING</p><h2 id="related-heading">Related reading</h2></div><p>More practical guides are on the way.</p></div>
         <div class="related-grid">{article.related.map((item) => <article class="related-card"><span>{item.category}</span><h3>{item.title}</h3><p>Coming soon</p></article>)}</div>
-      </section>
+      </section> : null}
     </div>
   </main>
 </Layout>

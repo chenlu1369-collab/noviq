@@ -16,7 +16,7 @@ import { articles } from '../../data/articles';
 						return <article class="review-card">
 							<a class="review-image" href={articleHref}><img src={article.coverImage} alt={article.coverAlt} loading="lazy" /></a>
 							<div class="review-copy">
-								<div class="review-meta"><span>{article.category}</span><span>Demonstration article</span></div>
+								<div class="review-meta"><span>{article.category}</span>{article.demo !== false && <span>Demonstration article</span>}</div>
 								<h2><a href={articleHref}>{article.title}</a></h2>
 								<p>{article.summary}</p>
 								<a class="read-link" href={articleHref}>Read Review <span aria-hidden="true">→</span></a>
@@ -24,7 +24,7 @@ import { articles } from '../../data/articles';
 						</article>;
 					})}
 				</div>
-				<p class="demo-note">All articles shown are demonstrations, not hands-on product reviews.</p>
+				<p class="demo-note">Demonstration entries are identified as such; content is not presented as hands-on testing unless the article explicitly says so.</p>
 			</div>
 		</section>
 	</main>

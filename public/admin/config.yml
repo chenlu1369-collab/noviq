@@ -1,0 +1,79 @@
+backend:
+  name: turbo-github
+  turbo_site_id: 8f47d9cf-10fd-48a9-8877-6552b2752491
+  branch: master
+
+site_url: https://noviq-as3.pages.dev
+display_url: https://noviq-as3.pages.dev
+locale: zh_Hans
+
+media_folder: public/images/articles
+public_folder: /images/articles
+
+collections:
+  - name: articles
+    label: 文章
+    label_singular: 文章
+    folder: src/data/cms-articles
+    create: true
+    extension: json
+    format: json
+    identifier_field: slug
+    slug: '{{slug}}'
+    summary: '{{category}} · {{title}}'
+    preview_path: 'reviews/{{slug}}/'
+    fields:
+      - label: 标题
+        name: title
+        widget: string
+      - label: URL 标识
+        name: slug
+        widget: string
+        pattern:
+          - '^(?!(?:example-review|understanding-smartphone-specifications|choosing-a-laptop-for-everyday-use|choosing-a-smart-speaker)$)[a-z0-9]+(?:-[a-z0-9]+)*$'
+          - 请使用小写英文字母、数字和连字符，并避开现有文章的 URL 标识。
+      - label: 分类
+        name: category
+        widget: select
+        options:
+          - label: 智能手机 Smartphones
+            value: smartphones
+          - label: 电脑 Computers
+            value: computers
+          - label: 耳机 Headphones
+            value: headphones
+          - label: 智能音箱 Smart Speakers
+            value: smart-speakers
+      - label: 摘要 / Description
+        name: description
+        widget: text
+      - label: 封面图片
+        name: image
+        widget: image
+        hint: 图片保存到 public/images/articles，前台路径以 /images/articles/ 开始。
+      - label: 图片替代文字
+        name: imageAlt
+        widget: string
+        required: false
+      - label: 发布日期
+        name: date
+        widget: datetime
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        picker_utc: true
+      - label: 作者
+        name: author
+        widget: string
+        required: false
+      - label: SEO 标题
+        name: seoTitle
+        widget: string
+        required: false
+      - label: SEO 描述
+        name: seoDescription
+        widget: text
+        required: false
+      - label: 正文
+        name: body
+        widget: markdown
+        hint: 使用 Markdown 编写。请用 ## 和 ### 作为章节标题；页面会自动生成文章目录。

@@ -1,5 +1,5 @@
 ---
-import type { ArticleContentBlock } from '../types/article';
+import type { ArticleContentBlock, ArticleInlineToken } from '../types/article';
 
 interface Props {
   blocks: ArticleContentBlock[];
@@ -11,7 +11,7 @@ const { blocks } = Astro.props;
 <div class="article-body">
   {blocks.map((block) => (
     <>
-      {block.type === 'paragraph' && <p>{block.text}</p>}
+      {block.type === 'paragraph' && <p>{block.parts ? block.parts.map((part: ArticleInlineToken) => part.type === 'strong' ? <strong>{part.text}</strong> : part.type === 'emphasis' ? <em>{part.text}</em> : part.type === 'code' ? <code>{part.text}</code> : part.type === 'link' ? <a href={part.href}>{part.text}</a> : part.text) : block.text}</p>}
       {block.type === 'heading' && block.level === 2 && <h2 id={block.id}>{block.text}</h2>}
       {block.type === 'heading' && block.level === 3 && <h3 id={block.id}>{block.text}</h3>}
       {block.type === 'image' && (
@@ -47,6 +47,9 @@ const { blocks } = Astro.props;
   .article-body ul,.article-body ol{margin:0 0 1.5em;padding-left:1.35em}
   .article-body li{padding-left:.25em;margin:.45em 0}
   .article-body li::marker{color:#4263d5}
+  .article-body a{color:#344fae;text-decoration:underline;text-decoration-color:#a9b7e8;text-underline-offset:3px}
+  .article-body a:hover{color:#4263d5}
+  .article-body code{padding:.12em .35em;border-radius:4px;background:#e9edf3;font-size:.88em}
   .article-body figure{margin:2em 0}
   .article-body figure img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:#e5e9ef}
   .article-body figcaption{margin-top:10px;color:#687386;font-size:14px;line-height:1.5}
