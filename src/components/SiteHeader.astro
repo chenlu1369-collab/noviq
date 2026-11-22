@@ -16,7 +16,12 @@ const isActive = (path: string) => path === '/' ? currentPath === '/' : currentP
     </div>
     <a class={isActive('/best-picks') ? 'active' : undefined} aria-current={isActive('/best-picks') ? 'page' : undefined} href="/best-picks">Best Picks</a><a class={isActive('/about') ? 'active' : undefined} aria-current={isActive('/about') ? 'page' : undefined} href="/about">About</a>
   </nav>
-  <a class="search-link" href="/search" aria-label="Search NOVIQ"><span>Search</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></a>
+  <div class="header-search" data-header-search>
+    <form class="header-search-form" role="search" action="/search/" method="get" autocomplete="off">
+      <input id="header-search-input" name="q" type="search" value="" placeholder="Search" aria-label="Search" autocomplete="off" />
+      <button type="submit" aria-label="Search articles"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+    </form>
+  </div>
 </header>
 
 <script>
@@ -51,4 +56,5 @@ const isActive = (path: string) => path === '/' ? currentPath === '/' : currentP
       }
     });
   }
+
 </script>

@@ -22,7 +22,7 @@ const articleStructuredData = JSON.stringify({
   url: articleUrl,
   mainEntityOfPage: articleUrl,
   publisher: { '@type': 'Organization', name: 'NOVIQ' },
-  ...(article.author ? { author: { '@type': 'Person', name: article.author } } : {}),
+  ...(article.author ? { author: { '@type': article.author === 'NOVIQ Editorial Team' ? 'Organization' : 'Person', name: article.author } } : {}),
 }).replace(/</g, '\\u003c');
 ---
 
@@ -36,7 +36,7 @@ const articleStructuredData = JSON.stringify({
         <h1>{article.title}</h1>
         <div class="article-byline">{article.author && <span>By <strong>{article.author}</strong></span>}<span><time datetime={article.publishedAt}>{article.publishedLabel}</time></span><span>{article.readingTime}</span></div>
       </header>
-      <figure class="article-cover"><img src={article.coverImage} alt={article.coverAlt} fetchpriority="high" />{(isDemo || article.imageCaption) && <figcaption>{article.imageCaption || 'Illustrative image for this demonstration article.'}</figcaption>}</figure>
+      <figure class="article-cover"><img src={article.coverImage} alt={article.coverAlt} loading="eager" fetchpriority="high" />{(isDemo || article.imageCaption) && <figcaption>{article.imageCaption || 'Illustrative image for this demonstration article.'}</figcaption>}</figure>
 
       <div class="reading-layout">
         <div class="article-main">

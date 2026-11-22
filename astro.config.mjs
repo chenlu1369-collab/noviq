@@ -9,7 +9,7 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         const pathname = new URL(page).pathname;
-        return !/^\/(?:admin(?:\/|$)|404(?:\.html|\/?$))/.test(pathname);
+        return !/^\/(?:admin(?:\/|$)|404(?:\.html|\/?$)|search\/?$)/.test(pathname);
       },
     }),
   ],
