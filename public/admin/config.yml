@@ -3,8 +3,8 @@ backend:
   turbo_site_id: 8f47d9cf-10fd-48a9-8877-6552b2752491
   branch: master
 
-site_url: https://noviq-as3.pages.dev
-display_url: https://noviq-as3.pages.dev
+site_url: https://noviqreviews.com
+display_url: https://noviqreviews.com
 locale: zh_Hans
 
 media_folder: public/images/articles

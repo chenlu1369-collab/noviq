@@ -8,8 +8,8 @@ import type { Article } from '../types/article';
 interface Props { article: Article }
 const { article } = Astro.props;
 const isDemo = article.demo !== false;
-const articleUrl = `https://noviq-as3.pages.dev/reviews/${article.slug}/`;
-const articleImageUrl = new URL(article.coverImage, 'https://noviq-as3.pages.dev').href;
+const articleUrl = `https://noviqreviews.com/reviews/${article.slug}/`;
+const articleImageUrl = new URL(article.coverImage, 'https://noviqreviews.com').href;
 const articleStructuredData = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Article',

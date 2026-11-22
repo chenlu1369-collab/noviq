@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://noviq-as3.pages.dev',
+  site: 'https://noviqreviews.com',
   integrations: [
     sitemap({
       filter: (page) => {

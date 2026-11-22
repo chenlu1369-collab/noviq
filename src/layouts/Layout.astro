@@ -15,7 +15,7 @@ const {
 	openGraphType = 'website',
 	noindex = false,
 } = Astro.props;
-const siteUrl = 'https://noviq-as3.pages.dev';
+const siteUrl = 'https://noviqreviews.com';
 const canonicalPath = Astro.url.pathname === '/'
 	? '/'
 	: `${Astro.url.pathname.replace(/\/+$/, '')}/`;
@@ -36,7 +36,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" />
-		<link rel="sitemap" href="/sitemap.xml" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
 		{!noindex && <link rel="canonical" href={canonicalUrl} />}
 		<link rel="preconnect" href="https://images.unsplash.com" />
 		<title>{title}</title>
